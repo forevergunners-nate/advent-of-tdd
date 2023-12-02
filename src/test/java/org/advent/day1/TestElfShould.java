@@ -2,10 +2,46 @@ package org.advent.day1;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 public class TestElfShould {
+
+    static Collection<Elf> generateSpikeFromFile() {
+        Collection<Elf> elfs = new ArrayList<>();
+        BufferedReader reader;
+
+        try {
+            reader = new BufferedReader(new FileReader("src/main/resources/day1-elf-calories.txt"));
+            String line = reader.readLine();
+            Elf current = null;
+            while (line != null) {
+                if (null == current || line.isEmpty()) {
+                    if (null != current) {
+                        elfs.add(current);
+                    }
+                    current = new Elf();
+                }
+                if (!line.isEmpty()) {
+                    current.addCalories(Integer.parseInt(line));
+                }
+                line = reader.readLine();
+            }
+            elfs.add(current);
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return elfs;
+    }
     @Test
     void have_zero_total_calories_when_created() {
         Elf elf = new Elf();
@@ -81,5 +117,20 @@ public class TestElfShould {
         Elf elf = new Elf();
         elf.addCalories(10000);
         assertThat(elf.getTotalCalories(), equalTo(10000));
+    }
+
+    @Test
+    void have_total_calories_equal_to_all_added_calories_for_elfs_from_spike() {
+        // Given
+        Collection<Elf> spike = generateSpikeFromFile();
+        assertThat(spike.size(), equalTo(5));
+        Collection<Integer> expectResults = List.of(6000, 4000, 11000, 24000, 10000);
+        // When
+        // Then
+        Iterator<Elf> spikeIterator = spike.iterator();
+        Iterator<Integer> expectResultsIterator = expectResults.iterator();
+        while (spikeIterator.hasNext() && expectResultsIterator.hasNext()) {
+            assertThat(spikeIterator.next().getTotalCalories(), equalTo(expectResultsIterator.next()));
+        }
     }
 }
