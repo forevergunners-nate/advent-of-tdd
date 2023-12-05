@@ -39,7 +39,7 @@ public class Puzzle1Solution
         }
     }
 
-    public int SumOfCalibrationValues() {
+    public int sumOfCalibrationValues() {
         return this.calibrationValues.stream().mapToInt(Integer::intValue).sum();
     }
 }
