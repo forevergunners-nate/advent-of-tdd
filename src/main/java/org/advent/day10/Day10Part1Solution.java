@@ -1,6 +1,6 @@
 package org.advent.day10;
 
-import java.awt.*;
+import java.awt.Point;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;

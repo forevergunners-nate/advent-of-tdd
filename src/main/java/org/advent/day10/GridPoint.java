@@ -1,6 +1,6 @@
 package org.advent.day10;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
