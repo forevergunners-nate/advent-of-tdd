@@ -6,11 +6,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class Day13Part1Solution {
+public class Day13Part2Solution {
     public long patternNotesSum = 0;
-    public Day13Part1Solution(String filePath) throws IOException, URISyntaxException {
+    public Day13Part2Solution(String filePath) throws IOException, URISyntaxException {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         Path path = Paths.get(classloader.getResource(filePath).toURI());
         List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
@@ -71,8 +73,8 @@ public class Day13Part1Solution {
     }
 
     /**
-     * 1. Find 2 continued rows that are the same - the mirror may start for there.
-     * 2. Find all the mirror rows from where #1 starts
+     * 1. Find 2 continued rows that are the same or with 1 smudge - the mirror may start for there.
+     * 2. Find all the mirror rows or rows with 1 or ZERO smudge from where #1 starts
      * 3. Till all hit the edges -> ceiling or bottom, return the up index in #1
      * @param store
      * @return
@@ -82,10 +84,12 @@ public class Day13Part1Solution {
         for (int i = 1; i < length; i++) {
             String up = store.get(i - 1);
             String down = store.get(i);
-            if (up.equals(down)) {
-                System.out.println("Up and down indexes: " + (i - 1) + ", " + i);
+            int mirrorSmudges = calculateSmudges(up, down);
+            if (mirrorSmudges <= 1) {
+                //System.out.println("Up and down indexes: " + (i - 1) + ", " + i);
                 int matchedLines = Math.min(i - 1, length - i - 1); // max possible matches
                 boolean matchContinues = true;
+                boolean smudgeFound = false;
                 for (int j = 0; j < matchedLines; j++) {
                     //
                     // i - j - 2  UpMatch when j = 0 -> i - 1 - 1 - j
@@ -95,17 +99,39 @@ public class Day13Part1Solution {
                     //
                     String upMatch = store.get( i - j - 2);
                     String downMatch = store.get( i + j + 1);
-                    if (!upMatch.equals(downMatch)) {
+                    int matchedRowsSmudges = calculateSmudges(upMatch, downMatch);
+                    if (matchedRowsSmudges > 1) {
                         matchContinues = false;
                         break;
+                    } else if (matchedRowsSmudges > 0 && mirrorSmudges > 0) {
+                        matchContinues = false;
+                        break;
+                    } else if (matchedRowsSmudges > 0 && smudgeFound) {
+                        matchContinues = false;
+                        break;
+                    } else if (matchedRowsSmudges > 0 && !smudgeFound) {
+                        smudgeFound = true;
                     }
                 }
-                if (matchContinues) {
+                if (matchContinues && !smudgeFound && mirrorSmudges == 1) {
+                    return i;
+                }
+                if (matchContinues && smudgeFound && mirrorSmudges == 0 ) {
                     return i;
                 }
             }
         }
         return 0;
+    }
+
+    private int calculateSmudges(String up, String down) {
+        int smudgeCount = 0;
+        for (int i = 0; i < up.length(); i++) {
+            if (up.charAt(i) != down.charAt(i)) {
+                smudgeCount++;
+            }
+        }
+        return smudgeCount;
     }
 
     public long solve() {
