@@ -45,7 +45,7 @@ public class Day17Part2Solution {
         //System.out.println(Arrays.deepToString(this.input));
     }
 
-    private long bfs(int dX, int dy) {
+    private long bfs(int dX, int dY) {
         PriorityQueue<MovementState> heap = new PriorityQueue<>();
         heap.add(new MovementState(new MovementRecord(0, 1, RIGHT, 1), this.input[0][1]));
         heap.add(new MovementState(new MovementRecord(1, 0, DOWN, 1), this.input[1][0]));
@@ -57,7 +57,7 @@ public class Day17Part2Solution {
             if (this.visited.contains(currentMr)) {
                 continue;
             }
-            if (currentX == dX && currentY == dy) {
+            if (currentX == dX && currentY == dY && current.getMr().steps() >= 3) {
                 return current.getCost();
             }
             this.visited.add(currentMr);
