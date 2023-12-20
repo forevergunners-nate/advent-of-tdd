@@ -1,5 +1,7 @@
 package org.advent.day19;
 
+import java.util.Objects;
+
 public class Expression {
     public static final String OPERATOR_GREATER_THAN = ">";
     public static final String OPERATOR_LESS_THAN = "<";
@@ -7,9 +9,7 @@ public class Expression {
     private String partCategory;
     private String operator;
     private long threshold;
-    private String positiveOutcome;
-    private String negativeOutcome;
-
+    private String outcome;
     public String getPartCategory() {
         return partCategory;
     }
@@ -34,42 +34,31 @@ public class Expression {
         this.threshold = threshold;
     }
 
-    public String getPositiveOutcome() {
-        return positiveOutcome;
+    public String getOutcome() {
+        return outcome;
     }
 
-    public void setPositiveOutcome(String positiveOutcome) {
-        this.positiveOutcome = positiveOutcome;
+    public void setOutcome(String outcome) {
+        this.outcome = outcome;
     }
 
-    public String getNegativeOutcome() {
-        return negativeOutcome;
-    }
-
-    public void setNegativeOutcome(String negativeOutcome) {
-        this.negativeOutcome = negativeOutcome;
-    }
-
-    public Expression(String partCategory, String operator, long threshold, String positiveOutcome, String negativeOutcome) {
+    public Expression(String partCategory, String operator, long threshold, String outcome) {
         this.partCategory = partCategory;
         this.operator = operator;
         this.threshold = threshold;
-        this.positiveOutcome = positiveOutcome;
-        this.negativeOutcome = negativeOutcome;
+        this.outcome = outcome;
     }
 
     public String evaluate(Rating rating) {
-        if (this.operator == OPERATOR_GREATER_THAN) {
+        if (Objects.equals(this.operator, OPERATOR_GREATER_THAN)) {
             if (rating.value() > this.threshold) {
-                return this.positiveOutcome;
-            } else {
-                return this.negativeOutcome;
+                return this.outcome;
             }
         }
-        if (rating.value() < this.threshold) {
-            return this.positiveOutcome;
+        else if (rating.value() < this.threshold) {
+            return this.outcome;
         }
-        return this.negativeOutcome;
+        return null;
     }
 
     @Override
@@ -78,8 +67,7 @@ public class Expression {
                 "partCategory='" + partCategory + '\'' +
                 ", operator='" + operator + '\'' +
                 ", threshold=" + threshold +
-                ", positiveOutcome='" + positiveOutcome + '\'' +
-                ", negativeOutcome='" + negativeOutcome + '\'' +
+                ", outcome='" + outcome + '\'' +
                 '}';
     }
 }

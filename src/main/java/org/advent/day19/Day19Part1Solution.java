@@ -46,6 +46,7 @@ public class Day19Part1Solution {
             }
             i++;
         }
+        System.out.println(Arrays.deepToString(this.workflowMap.entrySet().toArray()));
     }
 
     private boolean processRatings(List<Rating> ratings) {
@@ -55,20 +56,22 @@ public class Day19Part1Solution {
         String result = ENTRY_WORKFLOW;
         Workflow workflow;
         while (!(ACCEPTED.equals(result) || REJECTED.equals(result))) {
+            System.out.println("current result:" + result);
             workflow = this.workflowMap.get(result);
             String tmp = null;
-            for (Expression expression : workflow.getExpressions()) {
-                if (tmp != null) {
-                    break;
-                }
+            for (int i = 0; i < workflow.getExpressions().size() && tmp == null; i++) {
+                Expression expression = workflow.getExpressions().get(i);
                 String currentCategory = expression.getPartCategory();
-                Rating rating = ratingMap.getOrDefault(currentCategory, null);
-                if (null != rating) {
-                    tmp = expression.evaluate(rating);
-                }
+                Rating rating = ratingMap.get(currentCategory);
+                tmp = expression.evaluate(rating);
             }
-            result = tmp;
+            if (null == tmp) {
+                result = workflow.getFallback();
+            } else {
+                result = tmp;
+            }
         }
+        System.out.println("final result:" + result);
         return result.equals(ACCEPTED);
     }
 
@@ -94,7 +97,6 @@ public class Day19Part1Solution {
         Workflow workflow = this.workflowMap.computeIfAbsent(workflowName, k -> new Workflow());
         //a<2006:qkq,m>2090:A,rfg
         StringTokenizer stringTokenizer = new StringTokenizer(params[1], ",");
-        Expression last = null;
         while (stringTokenizer.hasMoreTokens()) {
             String current = stringTokenizer.nextToken();
             if (current.contains(Expression.OPERATOR_GREATER_THAN) || current.contains(Expression.OPERATOR_LESS_THAN)) {
@@ -104,13 +106,10 @@ public class Day19Part1Solution {
                 String[] conditionParams = expressionParams[1].split(":");
                 long threshold = Long.parseLong(conditionParams[0]);
                 String positiveOutcome = conditionParams[1];
-                Expression newExpression = new Expression(category, delimiter, threshold, positiveOutcome, null);
+                Expression newExpression = new Expression(category, delimiter, threshold, positiveOutcome);
                 workflow.addExpression(newExpression);
-                last = newExpression;
             } else {
-                if (null != last) {
-                    last.setNegativeOutcome(current);
-                }
+                workflow.setFallback(current);
             }
         }
         return workflow;
