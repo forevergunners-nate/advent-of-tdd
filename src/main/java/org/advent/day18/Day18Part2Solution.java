@@ -9,6 +9,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  Reads to solve the problem:
+ *  1. Shoelace Formula: https://en.wikipedia.org/wiki/Shoelace_formula
+ *  2. Pick's theorem: https://en.wikipedia.org/wiki/Pick%27s_theorem
+ *
+ *
+ */
 public class Day18Part2Solution {
     public static final char UP = 'U';
     public static final char DOWN = 'D';
