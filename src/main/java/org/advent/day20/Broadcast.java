@@ -1,7 +1,5 @@
 package org.advent.day20;
 
-import java.util.Map;
-
 public class Broadcast extends Module {
     public Broadcast(ModuleType type, String moduleName) {
         super(type, moduleName);

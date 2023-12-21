@@ -1,8 +1,6 @@
 package org.advent.day20;
 
-import org.advent.day19.Expression;
-import org.advent.day19.Rating;
-import org.advent.day19.Workflow;
+import org.advent.day20.Pulse;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Day20Part1Solution {
